@@ -1,0 +1,88 @@
+<!-- tym.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Favorite Movies</title>
+</head>
+<body>
+    <header>
+        <div class="nav container">
+            <a href="index.html" class="logo">Movie<span>Vel</span></a>
+            <div class="search-box">
+                <input type="search" name="" id="search-input" placeholder="Search movie">
+                <i class='bx bx-search'></i>
+            </div>
+            <a href="#" class="user">
+                <img src="img/user.jpg" alt="" class="user-img">
+            </a>
+            <div class="navbar">
+                <a href="index.html" class="nav-link"><i class="bx bx-home"></i><span>Home</span></a>
+                <a href="index.html#popular" class="nav-link"><i class='bx bxs-hot'></i><span>Trending</span></a>
+                <a href="Explore.html" class="nav-link"><i class='bx bx-compass'></i><span>Explore</span></a>
+                <a href="index.html#movies" class="nav-link"><i class='bx bx-tv'></i><span>Movies</span></a>
+                <a href="tym.html" class="nav-link nav-active"><i class='bx bx-heart'></i><span>Favourite</span></a>
+            </div>
+        </div>
+    </header>
+
+    <section class="movies container" id="favorites">
+        <div class="heading">
+            <h2 class="heading-title">Your Favorite Movies</h2>
+        </div>
+        <div class="movies-content" id="favorites-content"></div>
+    </section>
+
+    <div class="copyright">
+        <p>© CarpoolVenom All Right Reserved</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const favoritesContent = document.getElementById("favorites-content");
+            let favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+
+            function renderFavorites() {
+                favoritesContent.innerHTML = "";
+                const favoriteMovies = Object.values(favorites);
+
+                if (favoriteMovies.length === 0) {
+                    favoritesContent.innerHTML = '<p>No favorite movies selected.</p>';
+                    return;
+                }
+
+                favoriteMovies.forEach(movie => {
+                    const movieBox = document.createElement("div");
+                    movieBox.classList.add("movie-box");
+                    movieBox.innerHTML = `
+                        <img src="${movie.image}" alt="" class="movie-box-img">
+                        <i class="bx bx-heart favorite-icon active"></i>
+                        <div class="box-text">
+                            <h2 class="movie-title">${movie.title}</h2>
+                            <span class="movie-type">${movie.type}</span>
+                            <a href="${movie.link}" class="watch-btn play-btn">
+                                <i class="bx bx-right-arrow"></i>
+                            </a>
+                        </div>
+                    `;
+                    favoritesContent.appendChild(movieBox);
+
+                    // Xử lý bỏ yêu thích
+                    const heartIcon = movieBox.querySelector(".favorite-icon");
+                    heartIcon.addEventListener("click", function () {
+                        delete favorites[movie.title];
+                        localStorage.setItem("favorites", JSON.stringify(favorites));
+                        renderFavorites();
+                    });
+                });
+            }
+
+            renderFavorites();
+        });
+    </script>
+</body>
+</html>
